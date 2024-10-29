@@ -81,7 +81,10 @@ class Record:
 
            
     def add_birthday(self, birthday_value):
-        self.birthday = Birthday(birthday_value)
+        birthday = Birthday(birthday_value)
+        if birthday:
+            self.birthday = birthday
+
 
 
     def __str__(self):
@@ -195,11 +198,31 @@ def show_phones(name, book: AddressBook):
 
 @input_error
 def show_all(book):
-    result = [f" a >>>{a}  record>>> {record}" for a, record in book.data.items()]
-    print(book)
-    print([el for el in book.data])
+    result = [f"{record}" for _, record in book.data.items()]
     return result
 
+
+@input_error
+def add_birthday(args, book: AddressBook):
+    name, birthday_date = args
+    record = book.find(name)
+    if Birthday(birthday_date):
+        record.add_birthday(birthday_date)
+        return f'{birthday_date} added for name {name}'
+
+@input_error
+def show_birthday(name, book: AddressBook):
+    record = book.find(name)
+    if record:
+        birthday = record.birthday.value
+        return f'Birthday of {name} is {birthday}'
+    return f'Birthday of {name} is not found'    
+
+
+def show_reminder(book):
+    if book.get_upcoming_birthdays():
+        return book.get_upcoming_birthdays()
+    return 'No reminders for this week'
 def main():
     book = AddressBook()
     print("Welcome to the assistant bot!")
@@ -212,33 +235,29 @@ def main():
             break
 
         elif command == "hello":
-            print("How can I help you?")
+            print("How can I help you?")        # ok
 
         elif command == "add":                  # ok
             print(add_contact(args, book))  
 
-
         elif command == "change":               # ok
             print(change_number(args, book))  
 
-        elif command == "phone":
+        elif command == "phone":                # ok
             print(show_phones(args[0], book))
 
-        elif command == "all":
+        elif command == "all":                  # ok
             print(show_all(book))
             
+        elif command == "add-birthday":         # ok
+            print(add_birthday(args, book))
 
-        elif command == "add-birthday":
-            pass
-            # реалізація
-
-        elif command == "show-birthday":
-            pass
-            # реалізація
+        elif command == "show-birthday":        # ok
+            print(show_birthday(args[0], book))
 
         elif command == "birthdays":
-            pass
-            # реалізація
+            print(show_reminder(book))
+
 
         else:
             print("Invalid command.")
@@ -259,5 +278,26 @@ if __name__ == "__main__":
 
 # Show
     phone roman
+
+
+# add-birthday
+    add-birthday roman 03.09.1994
+
+# show-birthday
+    show-birthday roman
  """
 
+
+
+
+
+
+
+
+""""
+def show_birthday(name):
+    pass
+
+def birthday():
+    pass
+"""
